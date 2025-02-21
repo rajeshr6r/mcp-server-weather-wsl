@@ -1,0 +1,39 @@
+language: python
+dependency_manager: uv
+build_tool: makefile
+lint_tool: ruff
+format_tool: black
+
+# Python version for compatibility
+python_version: "3.11.11"
+
+# Testing configuration
+test_framework: pytest
+test_coverage_tool: coverage
+
+# Documentation
+docstring_style: google
+doc_generator: mkdocs
+
+# Code style preferences
+line_length: 132
+typing: strict
+
+# Project structure
+src_layout: true
+test_directory: tests
+
+
+ai_notes:
+  - When generating API code, include error handling for status codes.
+  - Use gttpx is a modern, async-friendly HTTP client for Python
+  - Use tenacity for retrying HTTP calls
+  - Follow domain-driven design principles for larger applications
+  - Use dataclasses or pydantic for data models
+  - Write descriptive docstrings for all public functions and classes
+  - Include logging with appropriate log levels
+  - Use environment variables for configuration
+  - Follow the principle of dependency injection
+  - Use async/await for I/O-bound operations
+  - Include proper exception handling with custom exceptions
+  - I am using the mcp[cli] package, which is essentially the main mcp package bundled with extra dependencies or features for command-line interface support
