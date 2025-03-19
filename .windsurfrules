@@ -14,6 +14,7 @@ test_coverage_tool: coverage
 # Documentation
 docstring_style: google
 doc_generator: mkdocs
+alwways_include_docs: https://modelcontextprotocol.io/llms-full.txt
 
 # Code style preferences
 line_length: 132
