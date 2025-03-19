@@ -1,4 +1,4 @@
-.PHONY: lint format install test clean dev
+.PHONY: lint format install test clean dev outdated upgrade-deps run inspector
 SHELL := /bin/bash
 
 install:
@@ -36,6 +36,29 @@ clean:
 	@find . -type d -name "*.egg-info" -exec rm -rf {} +
 	@find . -type f -name "*.pyc" -delete
 
+outdated:
+	@echo "Checking for outdated dependencies..."
+	@uv pip list --outdated --format columns
+
+upgrade-deps:
+	@echo "Upgrading all outdated dependencies..."
+	@OUTDATED=$$(uv pip list --outdated | grep -v "^Package" | grep -v "^-------" | awk '{print $$1}'); \
+	if [ -n "$$OUTDATED" ]; then \
+		echo "Upgrading: $$OUTDATED"; \
+		uv pip install --upgrade $$OUTDATED; \
+	else \
+		echo "No outdated packages found."; \
+	fi
+	@echo "Dependencies upgraded successfully!"
+
+run:
+	@echo "Starting MCP server with uv..."
+	@uv run python -m main
+
+inspector:
+	@echo "Starting MCP Inspector for testing..."
+	@npx @modelcontextprotocol/inspector uv run python -m main
+
 .DEFAULT_GOAL := help
 
 help:
@@ -48,3 +71,8 @@ help:
 	@echo "  lint-format  - Run both linter and formatter"
 	@echo "  test         - Run tests using pytest with uv"
 	@echo "  clean        - Remove build artifacts and cache files"
+	@echo "  outdated     - Check for outdated dependencies using uv"
+	@echo "  upgrade-deps - Upgrade all outdated dependencies using uv"
+	@echo "  run          - Start the MCP server"
+	@echo "  inspector    - Start the MCP Inspector for testing"
+	@echo "  inspector-dev - Start the MCP Inspector with hot reloading"

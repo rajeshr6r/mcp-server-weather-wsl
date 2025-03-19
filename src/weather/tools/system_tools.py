@@ -1,6 +1,7 @@
 """System tools for the MCP server."""
 
 import logging
+from ..services.system_service import run_shell_command as service_run_shell_command
 
 
 # Configure logging
@@ -26,7 +27,7 @@ def register_tools(server):
         Returns:
             Command output or error message
         """
-        result = run_shell_command(command)
+        result = service_run_shell_command(command)
 
         if result["success"]:
             return result["stdout"]

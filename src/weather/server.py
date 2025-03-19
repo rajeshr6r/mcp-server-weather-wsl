@@ -1,7 +1,6 @@
 """Main MCP server implementation."""
 
 import logging
-import asyncio
 from mcp.server.fastmcp import FastMCP
 
 from .tools import register_all_tools
@@ -40,9 +39,13 @@ async def run_server(transport="stdio"):
     """
     server = create_server()
     logger.info(f"Starting weather MCP server with {transport} transport")
-    server.run(transport=transport)
+    # Use run_async instead of run to avoid nested event loops
+    await server.run_async(transport=transport)
 
 
 def main():
     """Entry point for running the server."""
-    asyncio.run(run_server())
+    # Create and run the server directly without asyncio.run
+    server = create_server()
+    logger.info("Starting weather MCP server with stdio transport")
+    server.run(transport="stdio")

@@ -44,7 +44,13 @@ The server is built with a modular architecture following best practices for Pyt
 To start the MCP server:
 
 ```bash
-python -m main
+make run
+```
+
+Or directly with uv:
+
+```bash
+uv run python -m main
 ```
 
 ### Connecting to Claude Desktop
@@ -118,8 +124,45 @@ The project includes several make targets to simplify development:
 | `lint-format`| Run both linter and formatter                |
 | `test`       | Run tests using pytest with uv               |
 | `clean`      | Remove build artifacts and cache files       |
+| `outdated`   | Check for outdated dependencies using uv     |
+| `upgrade-deps` | Upgrade all outdated dependencies using uv   |
+| `run`        | Start the MCP server using uv                |
 
 Run `make help` to see all available targets.
+
+## Testing Locally
+
+You can test your MCP server locally using the MCP CLI tool that comes with the `mcp[cli]` package:
+
+1. Start your server:
+   ```bash
+   python -m main
+   ```
+
+2. In a separate terminal, use the MCP CLI to interact with your server:
+
+   ```bash
+   # List all available tools
+   mcp list-tools http://localhost:8000
+   
+   # Call a specific weather tool
+   mcp call-tool http://localhost:8000 get_weather_alerts --args '{"state": "CA"}'
+   
+   # Get a weather forecast
+   mcp call-tool http://localhost:8000 get_forecast --args '{"latitude": 37.7749, "longitude": -122.4194}'
+   
+   # List system resources
+   mcp list-resources http://localhost:8000
+   
+   # Get system processes
+   mcp get-resource http://localhost:8000 top_processes
+   ```
+
+If you're using uv directly, you can run the MCP CLI with:
+
+```bash
+uv run mcp list-tools http://localhost:8000
+```
 
 ## Development
 
