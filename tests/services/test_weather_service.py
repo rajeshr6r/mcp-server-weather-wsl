@@ -2,7 +2,11 @@
 
 import pytest
 from unittest.mock import patch, AsyncMock
-from src.weather.services.weather_service import get_weather_alerts, get_weather_point, get_weather_forecast
+from src.weather.services.weather_service import (
+    get_weather_alerts,
+    get_weather_point,
+    get_weather_forecast,
+)
 
 
 @pytest.mark.asyncio
@@ -16,30 +20,34 @@ async def test_get_weather_alerts_success():
                     "areaDesc": "Test County",
                     "severity": "Moderate",
                     "description": "Test description",
-                    "instruction": "Test instructions"
+                    "instruction": "Test instructions",
                 }
             }
         ]
     }
-    
-    with patch("src.weather.services.weather_service.make_request", new_callable=AsyncMock) as mock_request:
+
+    with patch(
+        "src.weather.services.weather_service.make_request", new_callable=AsyncMock
+    ) as mock_request:
         mock_request.return_value = mock_data
         result = await get_weather_alerts("CA")
-        
+
         assert result == mock_data
         mock_request.assert_called_once_with(
             "https://api.weather.gov/alerts/active/area/CA",
-            headers={"Accept": "application/geo+json"}
+            headers={"Accept": "application/geo+json"},
         )
 
 
 @pytest.mark.asyncio
 async def test_get_weather_alerts_failure():
     """Test weather alerts retrieval failure."""
-    with patch("src.weather.services.weather_service.make_request", new_callable=AsyncMock) as mock_request:
+    with patch(
+        "src.weather.services.weather_service.make_request", new_callable=AsyncMock
+    ) as mock_request:
         mock_request.side_effect = Exception("API Error")
         result = await get_weather_alerts("CA")
-        
+
         assert result is None
 
 
@@ -51,25 +59,29 @@ async def test_get_weather_point_success():
             "forecast": "https://api.weather.gov/gridpoints/ABC/1,2/forecast"
         }
     }
-    
-    with patch("src.weather.services.weather_service.make_request", new_callable=AsyncMock) as mock_request:
+
+    with patch(
+        "src.weather.services.weather_service.make_request", new_callable=AsyncMock
+    ) as mock_request:
         mock_request.return_value = mock_data
         result = await get_weather_point(37.7749, -122.4194)
-        
+
         assert result == mock_data
         mock_request.assert_called_once_with(
             "https://api.weather.gov/points/37.7749,-122.4194",
-            headers={"Accept": "application/geo+json"}
+            headers={"Accept": "application/geo+json"},
         )
 
 
 @pytest.mark.asyncio
 async def test_get_weather_point_failure():
     """Test weather point data retrieval failure."""
-    with patch("src.weather.services.weather_service.make_request", new_callable=AsyncMock) as mock_request:
+    with patch(
+        "src.weather.services.weather_service.make_request", new_callable=AsyncMock
+    ) as mock_request:
         mock_request.side_effect = Exception("API Error")
         result = await get_weather_point(37.7749, -122.4194)
-        
+
         assert result is None
 
 
@@ -85,22 +97,23 @@ async def test_get_weather_forecast_success():
                     "temperatureUnit": "F",
                     "windSpeed": "10 mph",
                     "windDirection": "NE",
-                    "detailedForecast": "Partly cloudy with a chance of rain"
+                    "detailedForecast": "Partly cloudy with a chance of rain",
                 }
             ]
         }
     }
-    
+
     forecast_url = "https://api.weather.gov/gridpoints/ABC/1,2/forecast"
-    
-    with patch("src.weather.services.weather_service.make_request", new_callable=AsyncMock) as mock_request:
+
+    with patch(
+        "src.weather.services.weather_service.make_request", new_callable=AsyncMock
+    ) as mock_request:
         mock_request.return_value = mock_data
         result = await get_weather_forecast(forecast_url)
-        
+
         assert result == mock_data
         mock_request.assert_called_once_with(
-            forecast_url,
-            headers={"Accept": "application/geo+json"}
+            forecast_url, headers={"Accept": "application/geo+json"}
         )
 
 
@@ -108,9 +121,11 @@ async def test_get_weather_forecast_success():
 async def test_get_weather_forecast_failure():
     """Test weather forecast retrieval failure."""
     forecast_url = "https://api.weather.gov/gridpoints/ABC/1,2/forecast"
-    
-    with patch("src.weather.services.weather_service.make_request", new_callable=AsyncMock) as mock_request:
+
+    with patch(
+        "src.weather.services.weather_service.make_request", new_callable=AsyncMock
+    ) as mock_request:
         mock_request.side_effect = Exception("API Error")
         result = await get_weather_forecast(forecast_url)
-        
+
         assert result is None

@@ -2,7 +2,6 @@
 
 import pytest
 from unittest.mock import patch, AsyncMock
-from src.weather.server import create_server
 
 
 @pytest.mark.asyncio
@@ -12,7 +11,7 @@ async def test_get_alerts_tool_success(weather_server):
     tools = await weather_server.list_tools()
     tool_names = [tool.name for tool in tools]
     assert "get_alerts" in tool_names
-    
+
     # Expected formatted alert
     expected_result = """
     Event: Winter Storm Warning
@@ -21,13 +20,15 @@ async def test_get_alerts_tool_success(weather_server):
     Description: Heavy snow expected
     Instructions: Avoid unnecessary travel
     """
-    
+
     # Mock the call_tool method
-    with patch.object(weather_server, "call_tool", new_callable=AsyncMock) as mock_call_tool:
+    with patch.object(
+        weather_server, "call_tool", new_callable=AsyncMock
+    ) as mock_call_tool:
         mock_call_tool.return_value = expected_result
-        
+
         result = await weather_server.call_tool("get_alerts", {"state": "NY"})
-        
+
         assert result == expected_result
         mock_call_tool.assert_called_once_with("get_alerts", {"state": "NY"})
 
@@ -39,16 +40,18 @@ async def test_get_alerts_tool_no_alerts(weather_server):
     tools = await weather_server.list_tools()
     tool_names = [tool.name for tool in tools]
     assert "get_alerts" in tool_names
-    
+
     # Expected result for no alerts
     expected_result = "No active alerts for this state."
-    
+
     # Mock the call_tool method
-    with patch.object(weather_server, "call_tool", new_callable=AsyncMock) as mock_call_tool:
+    with patch.object(
+        weather_server, "call_tool", new_callable=AsyncMock
+    ) as mock_call_tool:
         mock_call_tool.return_value = expected_result
-        
+
         result = await weather_server.call_tool("get_alerts", {"state": "CA"})
-        
+
         assert result == expected_result
         mock_call_tool.assert_called_once_with("get_alerts", {"state": "CA"})
 
@@ -60,16 +63,18 @@ async def test_get_alerts_tool_failure(weather_server):
     tools = await weather_server.list_tools()
     tool_names = [tool.name for tool in tools]
     assert "get_alerts" in tool_names
-    
+
     # Expected result for API failure
     expected_result = "Unable to fetch alerts or no alerts found."
-    
+
     # Mock the call_tool method
-    with patch.object(weather_server, "call_tool", new_callable=AsyncMock) as mock_call_tool:
+    with patch.object(
+        weather_server, "call_tool", new_callable=AsyncMock
+    ) as mock_call_tool:
         mock_call_tool.return_value = expected_result
-        
+
         result = await weather_server.call_tool("get_alerts", {"state": "TX"})
-        
+
         assert result == expected_result
         mock_call_tool.assert_called_once_with("get_alerts", {"state": "TX"})
 
@@ -81,7 +86,7 @@ async def test_get_forecast_tool_success(weather_server):
     tools = await weather_server.list_tools()
     tool_names = [tool.name for tool in tools]
     assert "get_forecast" in tool_names
-    
+
     # Expected formatted forecast
     expected_result = """
     Today:
@@ -94,15 +99,21 @@ async def test_get_forecast_tool_success(weather_server):
     Wind: 10 mph NE
     Forecast: Partly cloudy
     """
-    
+
     # Mock the call_tool method
-    with patch.object(weather_server, "call_tool", new_callable=AsyncMock) as mock_call_tool:
+    with patch.object(
+        weather_server, "call_tool", new_callable=AsyncMock
+    ) as mock_call_tool:
         mock_call_tool.return_value = expected_result
-        
-        result = await weather_server.call_tool("get_forecast", {"latitude": 37.7749, "longitude": -122.4194})
-        
+
+        result = await weather_server.call_tool(
+            "get_forecast", {"latitude": 37.7749, "longitude": -122.4194}
+        )
+
         assert result == expected_result
-        mock_call_tool.assert_called_once_with("get_forecast", {"latitude": 37.7749, "longitude": -122.4194})
+        mock_call_tool.assert_called_once_with(
+            "get_forecast", {"latitude": 37.7749, "longitude": -122.4194}
+        )
 
 
 @pytest.mark.asyncio
@@ -112,18 +123,24 @@ async def test_get_forecast_tool_point_failure(weather_server):
     tools = await weather_server.list_tools()
     tool_names = [tool.name for tool in tools]
     assert "get_forecast" in tool_names
-    
+
     # Expected result for point data retrieval failure
     expected_result = "Unable to fetch forecast data for the specified location."
-    
+
     # Mock the call_tool method
-    with patch.object(weather_server, "call_tool", new_callable=AsyncMock) as mock_call_tool:
+    with patch.object(
+        weather_server, "call_tool", new_callable=AsyncMock
+    ) as mock_call_tool:
         mock_call_tool.return_value = expected_result
-        
-        result = await weather_server.call_tool("get_forecast", {"latitude": 37.7749, "longitude": -122.4194})
-        
+
+        result = await weather_server.call_tool(
+            "get_forecast", {"latitude": 37.7749, "longitude": -122.4194}
+        )
+
         assert result == expected_result
-        mock_call_tool.assert_called_once_with("get_forecast", {"latitude": 37.7749, "longitude": -122.4194})
+        mock_call_tool.assert_called_once_with(
+            "get_forecast", {"latitude": 37.7749, "longitude": -122.4194}
+        )
 
 
 @pytest.mark.asyncio
@@ -133,15 +150,21 @@ async def test_get_forecast_tool_forecast_failure(weather_server):
     tools = await weather_server.list_tools()
     tool_names = [tool.name for tool in tools]
     assert "get_forecast" in tool_names
-    
+
     # Expected result for forecast data retrieval failure
     expected_result = "Unable to fetch detailed forecast data."
-    
+
     # Mock the call_tool method
-    with patch.object(weather_server, "call_tool", new_callable=AsyncMock) as mock_call_tool:
+    with patch.object(
+        weather_server, "call_tool", new_callable=AsyncMock
+    ) as mock_call_tool:
         mock_call_tool.return_value = expected_result
-        
-        result = await weather_server.call_tool("get_forecast", {"latitude": 37.7749, "longitude": -122.4194})
-        
+
+        result = await weather_server.call_tool(
+            "get_forecast", {"latitude": 37.7749, "longitude": -122.4194}
+        )
+
         assert result == expected_result
-        mock_call_tool.assert_called_once_with("get_forecast", {"latitude": 37.7749, "longitude": -122.4194})
+        mock_call_tool.assert_called_once_with(
+            "get_forecast", {"latitude": 37.7749, "longitude": -122.4194}
+        )
