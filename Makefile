@@ -29,6 +29,18 @@ test:
 	@echo "Running tests with uv..."
 	@uv run pytest
 
+test-cov:
+	@echo "Running tests with coverage..."
+	@uv run pytest --cov=src --cov-report=term --cov-report=html
+
+test-verbose:
+	@echo "Running tests in verbose mode..."
+	@uv run pytest -v
+
+test-watch:
+	@echo "Running tests in watch mode..."
+	@uv run python -m pytest_watch -- -v
+
 clean:
 	@echo "Cleaning build artifacts..."
 	@rm -rf build/ dist/ *.egg-info/ .pytest_cache/ .ruff_cache/ __pycache__/ 
@@ -70,6 +82,9 @@ help:
 	@echo "  format-check - Check if files would be reformatted by black"
 	@echo "  lint-format  - Run both linter and formatter"
 	@echo "  test         - Run tests using pytest with uv"
+	@echo "  test-cov     - Run tests with coverage report"
+	@echo "  test-verbose - Run tests in verbose mode"
+	@echo "  test-watch   - Run tests in watch mode (auto-rerun on file changes)"
 	@echo "  clean        - Remove build artifacts and cache files"
 	@echo "  outdated     - Check for outdated dependencies using uv"
 	@echo "  upgrade-deps - Upgrade all outdated dependencies using uv"

@@ -39,6 +39,6 @@ async def make_request(
             )
             response.raise_for_status()
             return response.json()
-        except httpx.RequestError:
+        except (httpx.RequestError, httpx.HTTPStatusError):
             # In a production app, you'd want to log this error
             return None
