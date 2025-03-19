@@ -127,6 +127,8 @@ The project includes several make targets to simplify development:
 | `outdated`   | Check for outdated dependencies using uv     |
 | `upgrade-deps` | Upgrade all outdated dependencies using uv   |
 | `run`        | Start the MCP server using uv                |
+| `inspector`  | Start the MCP Inspector for testing          |
+| `hooks`      | Install git hooks                            |
 
 Run `make help` to see all available targets.
 
@@ -136,14 +138,14 @@ You can test your MCP server locally using the MCP CLI tool that comes with the 
 
 1. Start your server:
    ```bash
-   python -m main
+   make run
    ```
 
 2. In a separate terminal, use the MCP CLI to interact with your server:
 
    ```bash
    # List all available tools
-   mcp list-tools http://localhost:8000
+   make inspector
    
    # Call a specific weather tool
    mcp call-tool http://localhost:8000 get_weather_alerts --args '{"state": "CA"}'
@@ -163,6 +165,58 @@ If you're using uv directly, you can run the MCP CLI with:
 ```bash
 uv run mcp list-tools http://localhost:8000
 ```
+
+## Using the MCP Inspector
+
+The MCP Inspector is a powerful tool for testing and debugging your MCP server. It provides a graphical interface to explore and interact with your server's tools, resources, and prompts.
+
+### Running the Inspector
+
+To run the MCP Inspector with the weather server:
+
+```bash
+make inspector
+```
+
+This will start both the MCP server and the Inspector in a single command. The Inspector will be available in your web browser.
+
+### Inspector Features
+
+The MCP Inspector allows you to:
+
+1. **Explore Tools**: View all available tools, their parameters, and documentation.
+2. **Call Tools**: Execute tools with custom parameters and see the results.
+3. **Browse Resources**: View all available resources and their current values.
+4. **Test Prompts**: If your server provides prompt templates, you can test them with different inputs.
+5. **View Logs**: See detailed logs of all interactions between the Inspector and your server.
+
+### Testing Weather Tools
+
+With the Inspector, you can easily test the weather tools:
+
+1. Find the `get_weather_alerts` tool in the Inspector interface
+2. Enter a state code (e.g., "CA", "NY", "FL") in the parameters field
+3. Execute the tool and view the results
+
+Similarly, you can test the `get_forecast` tool by providing latitude and longitude coordinates.
+
+### Testing System Tools
+
+The Inspector also makes it easy to test system tools:
+
+1. Find the `run_shell_command` tool
+2. Enter a safe command (e.g., "ls -la", "echo hello") in the parameters field
+3. Execute the tool and view the results
+
+### Debugging with the Inspector
+
+The Inspector is particularly useful for debugging:
+
+1. It shows detailed error messages if a tool call fails
+2. You can see the exact request and response payloads
+3. It helps identify issues with parameter validation or tool implementation
+
+For more information about the MCP Inspector, visit the [Model Context Protocol documentation](https://modelcontextprotocol.io/).
 
 ## Development
 
