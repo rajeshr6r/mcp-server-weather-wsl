@@ -1,5 +1,11 @@
-.PHONY: lint format install test clean dev outdated upgrade-deps run inspector
+.PHONY: lint format install test clean dev outdated upgrade-deps run inspector hooks
 SHELL := /bin/bash
+
+hooks:	.git/hooks/pre-commit
+
+.git/hooks/pre-commit: hooks/pre-commit
+	@echo "Installing hooks..."
+	@cp $? $@
 
 install:
 	@echo "Installing dependencies with uv..."
@@ -9,6 +15,7 @@ install:
 dev:
 	@echo "Installing development dependencies with uv..."
 	@uv pip install -e ".[dev]"
+	@uv pip install pre-commit
 
 lint:
 	@echo "Running linter with uv..."
@@ -71,6 +78,13 @@ inspector:
 	@echo "Starting MCP Inspector for testing..."
 	@npx @modelcontextprotocol/inspector uv run python -m main
 
+hook-install:
+	@echo "Installing git hooks..."
+	@mkdir -p .git/hooks
+	@cp -f hooks/pre-commit .git/hooks/pre-commit
+	@chmod +x .git/hooks/pre-commit
+	@echo "Git hooks installed successfully!"
+
 .DEFAULT_GOAL := help
 
 help:
@@ -90,4 +104,4 @@ help:
 	@echo "  upgrade-deps - Upgrade all outdated dependencies using uv"
 	@echo "  run          - Start the MCP server"
 	@echo "  inspector    - Start the MCP Inspector for testing"
-	@echo "  inspector-dev - Start the MCP Inspector with hot reloading"
+	@echo "  hooks         - Install git hooks"
