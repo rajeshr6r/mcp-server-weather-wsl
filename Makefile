@@ -1,4 +1,4 @@
-.PHONY: lint format install test clean dev outdated upgrade-deps run inspector hooks
+.PHONY: lint format install test clean outdated upgrade-deps run inspector hooks dev-server stop-server claude-install claude-uninstall claude-uninstall-manual
 SHELL := /bin/bash
 
 hooks:	.git/hooks/pre-commit
@@ -9,13 +9,35 @@ hooks:	.git/hooks/pre-commit
 
 install:
 	@echo "Installing dependencies with uv..."
-	@uv pip install --upgrade pip
-	@uv pip install -e .
+	@uv sync
 
-dev:
-	@echo "Installing development dependencies with uv..."
-	@uv pip install -e ".[dev]"
-	@uv pip install pre-commit
+dev-server:
+	@echo "Starting MCP server in development mode..."
+	@uv run mcp dev mcp_server.py:server -e .
+
+stop-server:
+	@echo "Stopping MCP server and Inspector..."
+	@-pkill -f "mcp dev" 2>/dev/null || true
+	@-pkill -f "node.*modelcontextprotocol/inspector" 2>/dev/null || true
+	@echo "Server stopped."
+
+claude-install:
+	@echo "Installing weather MCP server in Claude Desktop..."
+	@uv run mcp install mcp_server.py:server --name weather -e .
+	@echo "Weather MCP server installed in Claude Desktop. Please restart Claude to apply changes."
+
+claude-uninstall:
+	@echo "Uninstalling weather MCP server from Claude Desktop..."
+	@CONFIG_DIR="$$HOME/Library/Application Support/Claude/claude_desktop_config.json" && \
+	if [ -f "$$CONFIG_DIR" ]; then \
+		echo "Updating Claude Desktop configuration..."; \
+		TMP_FILE=$$(mktemp) && \
+		jq 'if .mcpServers.weather then del(.mcpServers.weather) else . end' "$$CONFIG_DIR" > "$$TMP_FILE" && \
+		mv "$$TMP_FILE" "$$CONFIG_DIR" && \
+		echo "Weather MCP server removed from Claude Desktop. Please restart Claude to apply changes."; \
+	else \
+		echo "Claude Desktop configuration not found. Nothing to uninstall."; \
+	fi
 
 lint:
 	@echo "Running linter with uv..."
@@ -61,13 +83,8 @@ outdated:
 
 upgrade-deps:
 	@echo "Upgrading all outdated dependencies..."
-	@OUTDATED=$$(uv pip list --outdated | grep -v "^Package" | grep -v "^-------" | awk '{print $$1}'); \
-	if [ -n "$$OUTDATED" ]; then \
-		echo "Upgrading: $$OUTDATED"; \
-		uv pip install --upgrade $$OUTDATED; \
-	else \
-		echo "No outdated packages found."; \
-	fi
+	@uv lock --upgrade
+	@uv sync
 	@echo "Dependencies upgraded successfully!"
 
 run:
@@ -105,3 +122,7 @@ help:
 	@echo "  run          - Start the MCP server"
 	@echo "  inspector    - Start the MCP Inspector for testing"
 	@echo "  hooks         - Install git hooks"
+	@echo "  dev-server   - Start the MCP server in development mode"
+	@echo "  stop-server  - Stop the MCP server and Inspector"
+	@echo "  claude-install - Install the server in Claude Desktop"
+	@echo "  claude-uninstall - Uninstall the server from Claude Desktop"

@@ -69,8 +69,11 @@ uv run python -m main
 }
 ```
 
-2. Restart Claude Desktop
-3. Connect to the weather server from Claude
+2. Restart Claude Desktop to apply the changes
+
+3. In Claude Desktop, you can now select the "weather" MCP server from the MCP server dropdown menu
+
+The weather MCP server will be available to Claude Desktop, allowing you to interact with weather data directly in your conversations.
 
 ### Example Queries
 
@@ -117,7 +120,6 @@ The project includes several make targets to simplify development:
 | Target       | Description                                  |
 |--------------|----------------------------------------------|
 | `install`    | Install project dependencies using uv        |
-| `dev`        | Install development dependencies using uv    |
 | `lint`       | Run ruff linter with auto-fix using uv       |
 | `format`     | Run black formatter using uv                 |
 | `format-check` | Check if files would be reformatted by black |
@@ -129,56 +131,67 @@ The project includes several make targets to simplify development:
 | `run`        | Start the MCP server using uv                |
 | `inspector`  | Start the MCP Inspector for testing          |
 | `hooks`      | Install git hooks                            |
+| `dev-server` | Start the MCP server in development mode     |
+| `stop-server`| Stop the MCP server and Inspector            |
+| `claude-install` | Install the server in Claude Desktop     |
+| `claude-uninstall` | Uninstall the server from Claude Desktop |
 
 Run `make help` to see all available targets.
 
-## Testing Locally
+### Using with Claude Desktop
 
-You can test your MCP server locally using the MCP CLI tool that comes with the `mcp[cli]` package:
+To use the weather MCP server with Claude Desktop:
 
-1. Start your server:
-   ```bash
-   make run
-   ```
-
-2. In a separate terminal, use the MCP CLI to interact with your server:
-
-   ```bash
-   # List all available tools
-   make inspector
-   
-   # Call a specific weather tool
-   mcp call-tool http://localhost:8000 get_weather_alerts --args '{"state": "CA"}'
-   
-   # Get a weather forecast
-   mcp call-tool http://localhost:8000 get_forecast --args '{"latitude": 37.7749, "longitude": -122.4194}'
-   
-   # List system resources
-   mcp list-resources http://localhost:8000
-   
-   # Get system processes
-   mcp get-resource http://localhost:8000 top_processes
-   ```
-
-If you're using uv directly, you can run the MCP CLI with:
+1. Install the server in Claude Desktop:
 
 ```bash
-uv run mcp list-tools http://localhost:8000
+make claude-install
 ```
 
-## Using the MCP Inspector
+This will:
+- Use the MCP CLI to install the server in Claude Desktop
+- Install the project in editable mode (`-e .`)
+- Register the server with the name "weather"
+- Configure the server to run from your project directory
 
-The MCP Inspector is a powerful tool for testing and debugging your MCP server. It provides a graphical interface to explore and interact with your server's tools, resources, and prompts.
+2. Restart Claude Desktop to apply the changes
 
-### Running the Inspector
+3. In Claude Desktop, you can now select the "weather" MCP server from the MCP server dropdown menu
 
-To run the MCP Inspector with the weather server:
+The weather MCP server will be available to Claude Desktop, allowing you to interact with weather data directly in your conversations.
+
+To uninstall the server from Claude Desktop:
 
 ```bash
-make inspector
+make claude-uninstall
 ```
 
-This will start both the MCP server and the Inspector in a single command. The Inspector will be available in your web browser.
+This will remove the weather MCP server configuration from Claude Desktop. You'll need to restart Claude to apply the changes.
+
+### Development Mode
+
+For active development with automatic reloading when code changes:
+
+```bash
+# Start the server in development mode with the MCP Inspector
+make dev-server
+```
+
+This will:
+1. Start the MCP server using the `mcp dev` command
+2. Install the project in editable mode (`-e .`)
+3. Launch the MCP Inspector automatically
+4. Enable automatic reloading when your code changes
+
+The MCP Inspector will be available at http://localhost:5173 in your web browser.
+
+To stop the server and Inspector:
+
+```bash
+make stop-server
+```
+
+This setup is ideal for iterative development as the server will automatically reload when you make changes to your code.
 
 ### Inspector Features
 
@@ -217,6 +230,40 @@ The Inspector is particularly useful for debugging:
 3. It helps identify issues with parameter validation or tool implementation
 
 For more information about the MCP Inspector, visit the [Model Context Protocol documentation](https://modelcontextprotocol.io/).
+
+## Testing Locally
+
+You can test your MCP server locally using the MCP CLI tool that comes with the `mcp[cli]` package:
+
+1. Start your server:
+   ```bash
+   make run
+   ```
+
+2. In a separate terminal, use the MCP CLI to interact with your server:
+
+   ```bash
+   # List all available tools
+   make inspector
+   
+   # Call a specific weather tool
+   mcp call-tool http://localhost:8000 get_weather_alerts --args '{"state": "CA"}'
+   
+   # Get a weather forecast
+   mcp call-tool http://localhost:8000 get_forecast --args '{"latitude": 37.7749, "longitude": -122.4194}'
+   
+   # List system resources
+   mcp list-resources http://localhost:8000
+   
+   # Get system processes
+   mcp get-resource http://localhost:8000 top_processes
+   ```
+
+If you're using uv directly, you can run the MCP CLI with:
+
+```bash
+uv run mcp list-tools http://localhost:8000
+```
 
 ## Development
 
