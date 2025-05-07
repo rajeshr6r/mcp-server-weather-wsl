@@ -69,8 +69,6 @@ uv run python -m main
 }
 ```
 
-#### Alternative step for WSL based configuration
-
 ```json
 {
     "mcpServers": {
