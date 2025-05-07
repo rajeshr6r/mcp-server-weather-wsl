@@ -68,21 +68,6 @@ uv run python -m main
   }
 }
 ```
-
-```json
-{
-    "mcpServers": {
-        "weather": {
-            "command": "wsl.exe",
-            "args": [
-                "bash",
-                "-c",
-                "/home/USERNAME/.local/bin/uv --directory /mnt/c/Users/USERNAME/Desktop/Projects/weather run weather.py"
-            ]
-        }
-    }
-}```
-
 2. Restart Claude Desktop to apply the changes
 
 3. In Claude Desktop, you can now select the "weather" MCP server from the MCP server dropdown menu
