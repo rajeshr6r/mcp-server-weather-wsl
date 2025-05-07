@@ -55,7 +55,9 @@ uv run python -m main
 
 ### Connecting to Claude Desktop
 
-1. Update your Claude Desktop configuration to include the weather server:
+1.a . Update your Claude Desktop configuration to include the weather server:
+
+#### Note : If you are using WSL setup use the alternative 1.b
 
 ```json
 {
@@ -69,6 +71,7 @@ uv run python -m main
 }
 ```
 
+1.b . Update your Claude Desktop configuration for WSL Setup
 
 ```json
 {
